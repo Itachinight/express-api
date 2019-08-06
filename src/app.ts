@@ -1,7 +1,6 @@
 import * as express from 'express';
 import {Request, Response, NextFunction, Application} from "express";
 import * as dotenv from 'dotenv';
-import * as bodyParser from 'body-parser';
 import 'reflect-metadata';
 import {createConnection, Connection} from 'typeorm';
 import productsRouter from './products/router';
@@ -15,7 +14,7 @@ const connection: Promise<Connection> = createConnection();
 connection.then(async connection => {
     const app: Application = express();
 
-    app.use(bodyParser.urlencoded({extended: true}));
+    app.use(express.urlencoded({extended: true}));
 
     app.use('/api/v1/categories', categoriesRouter);
     app.use('/api/v1/products', productsRouter);
@@ -33,3 +32,12 @@ connection.then(async connection => {
     });
 
 }).catch(err => console.log(err));
+
+
+/*
+TODO categories many to many relations
+TODO products selection
+TODO categories/{cat_id}/products path
+TODO users
+TODO carts + payment options
+ */

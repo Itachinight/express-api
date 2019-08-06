@@ -1,10 +1,20 @@
-import * as express from 'express';
 import {Response, Request, Router, NextFunction} from 'express';
-import {getRepository, Repository, DeleteResult} from "typeorm";
+import {getRepository, Repository, DeleteResult, createQueryBuilder} from "typeorm";
 import {NotFound, BadRequest} from 'http-errors';
 import Category from "../entity/Category";
+import Product from "../entity/Product";
 
-const router: Router = express.Router();
+const router: Router = Router();
+
+router.get('/:id/products', async (req: Request, res: Response) => {
+    const id: number = parseInt(req.params.id, 10);
+    const products: Product[] = await createQueryBuilder()
+        .relation(Category, "products")
+        .of(id)
+        .loadMany();
+
+    res.send(products);
+});
 
 router.get('/', async (req: Request, res: Response) => {
     const repository: Repository<Category> = getRepository(Category);
@@ -19,7 +29,7 @@ router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
 
     try {
         const category: Category = await repository.findOneOrFail(id);
-        res.send(JSON.stringify(category));
+        res.send(category);
     } catch (err) {
         console.log(err);
         next(new NotFound());
@@ -28,10 +38,24 @@ router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
 
 router.post('/', async (req: Request, res: Response, next: NextFunction) => {
     const repository: Repository<Category> = getRepository(Category);
-    let category: Category[] = await repository.create(req.body);
+    const {products, ...params} = req.body;
+
+    let category: Category = repository.create();
+    repository.merge(category, params);
 
     try {
         category = await repository.save(category);
+
+        for await (const productId of products) {
+            createQueryBuilder()
+                .relation(Category, "products")
+                .of(category)
+                .add(productId);
+        }
+
+        // needed for return products info
+        await category.products;
+
         res.send(category);
     } catch (err) {
         console.log(err);

@@ -1,10 +1,10 @@
-import * as express from 'express';
 import {Response, Request, Router, NextFunction} from 'express';
-import {getRepository, Repository, DeleteResult} from "typeorm";
+import {getRepository, Repository, DeleteResult, createQueryBuilder} from "typeorm";
 import {NotFound, BadRequest} from 'http-errors';
 import Product from '../entity/Product';
+import Category from "../entity/Category";
 
-const router: Router = express.Router();
+const router: Router = Router();
 
 router.get('/', async (req: Request, res: Response) => {
     const repository: Repository<Product> = getRepository(Product);
@@ -28,10 +28,21 @@ router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
 
 router.post('/', async (req: Request, res: Response, next: NextFunction) => {
     const repository: Repository<Product> = getRepository(Product);
-    let product: Product[] = await repository.create(req.body);
+    const {categories=[], ...params} = req.body;
+    let product: Product = await repository.create();
+    product = repository.merge(product, params);
 
     try {
         product = await repository.save(product);
+
+        for await (const categoryId of categories) {
+            createQueryBuilder()
+                .relation(Product, "categories")
+                .of(product)
+                .add(categoryId);
+        }
+
+        await product.categories;
         res.send(product);
     } catch (err) {
         console.log(err);
