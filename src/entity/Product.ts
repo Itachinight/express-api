@@ -1,9 +1,12 @@
 import {Entity, Column, CreateDateColumn, Timestamp, ManyToMany, JoinTable} from "typeorm";
-import Content from './Content';
+import BaseEntity from './BaseEntity';
 import Category from "./Category";
 
 @Entity('products')
-export default class Product extends Content{
+export default class Product extends BaseEntity{
+
+    @Column('text')
+    description: string;
 
     @Column('double')
     price: number;

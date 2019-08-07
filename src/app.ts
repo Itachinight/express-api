@@ -35,7 +35,6 @@ connection.then(async connection => {
 
 
 /*
-TODO categories many to many relations
 TODO products selection
 TODO categories/{cat_id}/products path
 TODO users

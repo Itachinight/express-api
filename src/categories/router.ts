@@ -1,5 +1,12 @@
 import {Response, Request, Router, NextFunction} from 'express';
-import {getRepository, Repository, DeleteResult, createQueryBuilder} from "typeorm";
+import {
+    getRepository,
+    Repository,
+    DeleteResult,
+    createQueryBuilder,
+    getManager,
+    EntityManager
+} from "typeorm";
 import {NotFound, BadRequest} from 'http-errors';
 import Category from "../entity/Category";
 import Product from "../entity/Product";
@@ -37,26 +44,24 @@ router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
 });
 
 router.post('/', async (req: Request, res: Response, next: NextFunction) => {
-    const repository: Repository<Category> = getRepository(Category);
+    const entityManager: EntityManager = getManager();
     const {products, ...params} = req.body;
 
-    let category: Category = repository.create();
-    repository.merge(category, params);
-
     try {
-        category = await repository.save(category);
+        await entityManager.transaction(async manager => {
+            let category: Category = manager.create(Category);
+            manager.merge(Category, category, params);
 
-        for await (const productId of products) {
-            createQueryBuilder()
+            await manager.save(category);
+            await manager.createQueryBuilder()
                 .relation(Category, "products")
                 .of(category)
-                .add(productId);
-        }
+                .add(products);
 
-        // needed for return products info
-        await category.products;
-
-        res.send(category);
+            // needed for return products info
+            await category.products;
+            res.send(category);
+        });
     } catch (err) {
         console.log(err);
         next(new BadRequest());
