@@ -1,16 +1,24 @@
 import {Response, Request, Router, NextFunction} from 'express';
-import {getRepository, Repository, DeleteResult, createQueryBuilder} from "typeorm";
+import {
+    getRepository,
+    Repository,
+    DeleteResult,
+    createQueryBuilder,
+    EntityManager,
+    getManager
+} from 'typeorm';
 import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError'
 import {NotFound, BadRequest} from 'http-errors';
 import Product from '../entity/Product';
-import Category from "../entity/Category";
+import Category from '../entity/Category';
+import ProductAttributeValue from '../entity/ProductAttributeValue';
 
 const router: Router = Router();
 
 router.get('/:id/categories', async (req: Request, res: Response) => {
     const id: number = parseInt(req.params.id, 10);
     const products: Category[] = await createQueryBuilder()
-        .relation(Product, "categories")
+        .relation(Product, 'categories')
         .of(id)
         .loadMany();
 
@@ -19,17 +27,32 @@ router.get('/:id/categories', async (req: Request, res: Response) => {
 
 router.get('/', async (req: Request, res: Response) => {
     const repository: Repository<Product> = getRepository(Product);
-    const products: Product[] = await repository.find();
+
+    const products: Product[] = await repository
+        .createQueryBuilder('product')
+        .getMany();
 
     res.send(products);
 });
 
 router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
-    const repository: Repository<Product> = getRepository(Product);
     const id: number = parseInt(req.params.id, 10);
 
     try {
-        const product: Product = await repository.findOneOrFail(id);
+        const product: Product = await createQueryBuilder(Product, 'product')
+             .leftJoinAndSelect('product.productToAttributeValues', 'values')
+             .leftJoinAndSelect('product.categories', 'categories')
+             .where('product.id = :id', {id})
+             .getOne();
+
+        for (let eav of product.productToAttributeValues) {
+            const {name} = await createQueryBuilder()
+               .relation(ProductAttributeValue, 'attribute')
+               .of(eav)
+               .loadOne();
+            eav.name = name;
+        }
+
         res.send(product);
     } catch (err) {
         console.log(err);
@@ -38,26 +61,24 @@ router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
 });
 
 router.post('/', async (req: Request, res: Response, next: NextFunction) => {
-    const repository: Repository<Product> = getRepository(Product);
-    const {categories = [], ...params} = req.body;
-
-    let product: Product = await repository.create();
-    product = repository.merge(product, params);
+    const entityManager: EntityManager = getManager();
+    const {categoriesId = [], ...params} = req.body;
 
     try {
-        product = await repository.save(product, {transaction: false});
+        let product: Product = await entityManager.create(Product);
+        await entityManager.transaction(async manager => {
+            manager.merge(Product, product, params);
 
-        for await (const categoryId of categories) {
-            createQueryBuilder()
-                .relation(Product, "categories")
-                .of(product)
-                .add(categoryId);
-        }
+            await manager.insert(Product, product);
+            await createQueryBuilder()
+                    .relation(Product, 'categories')
+                    .of(product)
+                    .add(categoriesId);
+            });
 
-        // needed for return products info
-        await product.categories;
-
-        res.send(product);
+            // needed for return products info
+            await product.categories;
+            res.send(product);
     } catch (err) {
         console.log(err);
         next(new BadRequest());

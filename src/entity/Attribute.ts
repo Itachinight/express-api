@@ -1,19 +1,11 @@
-import {Entity, Column} from "typeorm";
+import {Entity, OneToMany} from "typeorm";
 import BaseEntity from './BaseEntity';
-
-enum AttributeType {
-    varchar = 1,
-    int,
-}
+import ProductAttributeValue from "./ProductAttributeValue";
 
 @Entity('attributes')
 export default class Attribute extends BaseEntity{
 
-    @Column({
-        type: "enum",
-        enum: AttributeType,
-        default: AttributeType.varchar
-    })
-    type: string;
+    @OneToMany(type => ProductAttributeValue, productAttributeValue => productAttributeValue.attribute)
+    public attributeToProductValues!: ProductAttributeValue[];
 
 }

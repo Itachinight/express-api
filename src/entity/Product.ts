@@ -1,6 +1,7 @@
-import {Entity, Column, CreateDateColumn, Timestamp, ManyToMany, JoinTable} from "typeorm";
+import {Entity, Column, CreateDateColumn, Timestamp, ManyToMany, JoinTable, OneToMany} from "typeorm";
 import BaseEntity from './BaseEntity';
 import Category from "./Category";
+import ProductAttributeValue from "./ProductAttributeValue";
 
 @Entity('products')
 export default class Product extends BaseEntity{
@@ -29,5 +30,13 @@ export default class Product extends BaseEntity{
             referencedColumnName: "id"
         }
     })
-    categories: Promise<Category[]>;
+    categories: Category[];
+
+    @OneToMany(
+        type => ProductAttributeValue,
+        productAttributeValue => productAttributeValue.product,
+        {eager: true}
+    )
+    public productToAttributeValues!: ProductAttributeValue[];
+
 }

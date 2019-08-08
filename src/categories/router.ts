@@ -1,15 +1,16 @@
-import {Response, Request, Router, NextFunction} from 'express';
+import {Response, Request, NextFunction, Router} from 'express';
 import {
-    getRepository,
     Repository,
     DeleteResult,
+    EntityManager,
+    getRepository,
     createQueryBuilder,
     getManager,
-    EntityManager
 } from "typeorm";
 import {NotFound, BadRequest} from 'http-errors';
 import Category from "../entity/Category";
 import Product from "../entity/Product";
+import {EntityNotFoundError} from "typeorm/error/EntityNotFoundError";
 
 const router: Router = Router();
 
@@ -48,20 +49,20 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
     const {products, ...params} = req.body;
 
     try {
+        let category: Category = entityManager.create(Category);
         await entityManager.transaction(async manager => {
-            let category: Category = manager.create(Category);
             manager.merge(Category, category, params);
 
-            await manager.save(category);
+            await manager.insert(Category, category);
             await manager.createQueryBuilder()
                 .relation(Category, "products")
                 .of(category)
                 .add(products);
 
-            // needed for return products info
-            await category.products;
-            res.send(category);
         });
+        // needed for return products info
+        await category.products;
+        res.send(category);
     } catch (err) {
         console.log(err);
         next(new BadRequest());
@@ -71,23 +72,20 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
 router.put('/:id', async (req: Request, res: Response, next: NextFunction) => {
     const repository: Repository<Category> = getRepository(Category);
     const id: number = parseInt(req.params.id, 10);
-    let category: Category;
+
 
     try {
-        category = await repository.findOneOrFail(id);
-    } catch (err) {
-        console.log(err);
-        next(new NotFound());
-    }
-
-    repository.merge(category, req.body);
-
-    try {
+        let category: Category = await repository.findOneOrFail(id);
+        repository.merge(category, req.body);
         category = await repository.save(category);
         res.send(category);
     } catch (err) {
         console.log(err);
-        next(new BadRequest());
+        if (err instanceof EntityNotFoundError) {
+            next(new NotFound());
+        } else {
+            next(new BadRequest());
+        }
     }
 });
 

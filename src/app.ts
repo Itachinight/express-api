@@ -36,7 +36,6 @@ connection.then(async connection => {
 
 /*
 TODO products selection
-TODO categories/{cat_id}/products path
 TODO users
 TODO carts + payment options
  */
