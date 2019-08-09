@@ -3,8 +3,8 @@ import {Request, Response, NextFunction, Application} from "express";
 import * as dotenv from 'dotenv';
 import 'reflect-metadata';
 import {createConnection, Connection} from 'typeorm';
-import productsRouter from './products/router';
-import categoriesRouter from "./categories/router";
+import productsRouter from './products/productsRouter';
+import categoriesRouter from './categories/router';
 import {HttpError, NotFound} from "http-errors";
 dotenv.config();
 
@@ -15,6 +15,7 @@ connection.then(async connection => {
     const app: Application = express();
 
     app.use(express.urlencoded({extended: true}));
+    app.use(express.json());
 
     app.use('/api/v1/categories', categoriesRouter);
     app.use('/api/v1/products', productsRouter);

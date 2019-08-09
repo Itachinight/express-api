@@ -6,15 +6,15 @@ import Attribute from "./Attribute";
 export default class ProductAttributeValue {
 
     @PrimaryColumn()
-    public productId?: number;
+    public productId: number;
 
     @PrimaryColumn()
-    public attributeId?: number;
+    public attributeId: number;
 
-    @ManyToOne(type => Product, product => product.productToAttributeValues)
+    @ManyToOne(type => Product, product => product.productToAttributeValues, {onDelete: "CASCADE"})
     public product?: Product;
 
-    @ManyToOne(type => Attribute, attribute => attribute.attributeToProductValues)
+    @ManyToOne(type => Attribute, attribute => attribute.attributeToProductValues,{eager: true, onDelete: "CASCADE"})
     public attribute?: Attribute;
 
     @Column('varchar')

@@ -4,7 +4,7 @@ import Category from "./Category";
 import ProductAttributeValue from "./ProductAttributeValue";
 
 @Entity('products')
-export default class Product extends BaseEntity{
+export default class Product extends BaseEntity {
 
     @Column('text')
     description: string;
@@ -18,7 +18,7 @@ export default class Product extends BaseEntity{
     @CreateDateColumn()
     created: Timestamp;
 
-    @ManyToMany(type => Category, category => category.products)
+    @ManyToMany(type => Category, category => category.products,{eager: true})
     @JoinTable({
         name: 'products_categories',
         joinColumn: {
@@ -37,6 +37,6 @@ export default class Product extends BaseEntity{
         productAttributeValue => productAttributeValue.product,
         {eager: true}
     )
-    public productToAttributeValues!: ProductAttributeValue[];
+    productToAttributeValues!: ProductAttributeValue[];
 
 }
