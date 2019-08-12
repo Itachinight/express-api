@@ -11,3 +11,12 @@ interface ProductFieldsInterface {
     price?: number,
     manufacturer?: string,
 }
+
+interface AttributeFieldsInterface {
+    name: string;
+}
+
+interface CategoryFieldsInterface {
+    name?: string;
+    description?: string,
+}

@@ -18,7 +18,7 @@ export default class Product extends BaseEntity {
     @CreateDateColumn()
     created: Timestamp;
 
-    @ManyToMany(type => Category, category => category.products,{eager: true})
+    @ManyToMany(type => Category, category => category.products)
     @JoinTable({
         name: 'products_categories',
         joinColumn: {
@@ -34,9 +34,8 @@ export default class Product extends BaseEntity {
 
     @OneToMany(
         type => ProductAttributeValue,
-        productAttributeValue => productAttributeValue.product,
-        {eager: true}
+        productAttributeValue => productAttributeValue.product
     )
-    productToAttributeValues!: ProductAttributeValue[];
+    productAttributeValues!: ProductAttributeValue[];
 
 }

@@ -11,7 +11,7 @@ export default class ProductAttributeValue {
     @PrimaryColumn()
     public attributeId: number;
 
-    @ManyToOne(type => Product, product => product.productToAttributeValues, {onDelete: "CASCADE"})
+    @ManyToOne(type => Product, product => product.productAttributeValues, {onDelete: "CASCADE"})
     public product?: Product;
 
     @ManyToOne(type => Attribute, attribute => attribute.attributeToProductValues,{eager: true, onDelete: "CASCADE"})
