@@ -6,6 +6,6 @@ import ProductAttributeValue from "./ProductAttributeValue";
 export default class Attribute extends BaseEntity{
 
     @OneToMany(type => ProductAttributeValue, productAttributeValue => productAttributeValue.attribute)
-    public attributeToProductValues!: ProductAttributeValue[];
+    attributeToProductValues!: ProductAttributeValue[];
 
 }

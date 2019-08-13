@@ -3,6 +3,9 @@ interface ProductSearchParams {
     manufacturer?: string,
     maxPrice?: number,
     minPrice?: number,
+    categoryId?: number,
+    attrId?: number,
+    attrValue?: string,
 }
 
 interface ProductFieldsInterface {
@@ -19,4 +22,11 @@ interface AttributeFieldsInterface {
 interface CategoryFieldsInterface {
     name?: string;
     description?: string,
+}
+
+interface UserFieldsInterface {
+    name?: string;
+    surname?: string;
+    login?: string;
+    password?: string;
 }

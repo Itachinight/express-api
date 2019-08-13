@@ -4,18 +4,18 @@ import AttributeModel from "../models/AttributeModel";
 import {BadRequest, NotFound} from "http-errors";
 import {parseId} from "../utils/helper";
 import {EntityNotFoundError} from "typeorm/error/EntityNotFoundError";
+import BaseController from "./BaseController";
 
-export default class AttributeController {
-    public router: Router;
+export default class AttributeController extends BaseController{
     private readonly attributeModel: AttributeModel;
 
     constructor() {
-        this.router = Router();
+        super();
         this.attributeModel = new AttributeModel();
-        this.setRoutes();
     }
 
-    setRoutes() {
+    protected setRoutes(): void {
+
         this.router.get('/', async (req: Request, res: Response, next: NextFunction) => {
             res.send(await this.attributeModel.getAttributes());
         });

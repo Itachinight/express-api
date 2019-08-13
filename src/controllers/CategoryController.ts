@@ -4,23 +4,23 @@ import Category from "../entities/Category";
 import Product from "../entities/Product";
 import {EntityNotFoundError} from "typeorm/error/EntityNotFoundError";
 import CategoryModel from "../models/CategoryModel";
-import {getProductsByCategoryId} from "../models/productModel";
+import ProductModel from "../models/ProductModel";
 import {parseId} from "../utils/helper";
+import BaseController from "./BaseController";
 
-export default class CategoryController {
-    public router: Router;
+export default class CategoryController extends BaseController{
     private readonly categoryModel: CategoryModel;
 
     constructor() {
-        this.router = Router();
+        super();
         this.categoryModel = new CategoryModel();
-        this.setRoutes();
     }
 
-    setRoutes() {
+    protected setRoutes(): void {
+
         this.router.get('/:id/products', async (req: Request, res: Response) => {
             const id: number = parseId(req);
-            const products: Product[] = await getProductsByCategoryId(id);
+            const products: Product[] = await ProductModel.getProductsByCategoryId(id);
 
             res.send(products);
         });

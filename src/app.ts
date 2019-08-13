@@ -6,7 +6,10 @@ import {createConnection, Connection} from 'typeorm';
 import {HttpError, NotFound} from "http-errors";
 import AttributeController from "./controllers/AttributeController";
 import CategoryController from './controllers/CategoryController';
-import productController from './controllers/productController';
+import ProductController from './controllers/ProductController';
+import UserController from "./controllers/UserController";
+import AuthController from "./controllers/AuthController";
+import jwt = require("express-jwt");
 
 dotEnv.config();
 const connection: Promise<Connection> = createConnection();
@@ -20,10 +23,16 @@ connection.then(async (connection: Connection) => {
 
     const attributeController: AttributeController = new AttributeController();
     const categoryController: CategoryController = new CategoryController();
+    const productController: ProductController = new ProductController();
+    const userController: UserController = new UserController();
+    const authController: AuthController = new AuthController();
 
+    app.use('/api/v1/attributes', jwt({secret: process.env.JWT_SALT}));
     app.use('/api/v1/attributes', attributeController.router);
+    app.use('/api/v1/auth', authController.router);
     app.use('/api/v1/categories', categoryController.router);
-    app.use('/api/v1/products', productController);
+    app.use('/api/v1/products', productController.router);
+    app.use('/api/v1/users', userController.router);
 
     app.use((req: Request, res: Response, next: NextFunction) => {
         next(new NotFound());

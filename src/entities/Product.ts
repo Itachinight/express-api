@@ -2,6 +2,7 @@ import {Entity, Column, CreateDateColumn, Timestamp, ManyToMany, JoinTable, OneT
 import BaseEntity from './BaseEntity';
 import Category from "./Category";
 import ProductAttributeValue from "./ProductAttributeValue";
+import UserCart from "./UserCart";
 
 @Entity('products')
 export default class Product extends BaseEntity {
@@ -22,20 +23,20 @@ export default class Product extends BaseEntity {
     @JoinTable({
         name: 'products_categories',
         joinColumn: {
-            name: "product_id",
+            name: "productId",
             referencedColumnName: "id"
         },
         inverseJoinColumn: {
-            name: "category_id",
+            name: "categoryId",
             referencedColumnName: "id"
         }
     })
     categories: Category[];
 
-    @OneToMany(
-        type => ProductAttributeValue,
-        productAttributeValue => productAttributeValue.product
-    )
+    @OneToMany(type => ProductAttributeValue,productAttributeValue => productAttributeValue.product)
     productAttributeValues!: ProductAttributeValue[];
+
+    @OneToMany(type => UserCart, userCart => userCart.user)
+    cart: UserCart[];
 
 }
