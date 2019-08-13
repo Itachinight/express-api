@@ -24,9 +24,17 @@ interface CategoryFieldsInterface {
     description?: string,
 }
 
+type UserRoleType = "admin" | "user";
+
 interface UserFieldsInterface {
     name?: string;
     surname?: string;
     login?: string;
     password?: string;
+    role?: UserRoleType;
+}
+declare namespace Express {
+    export interface Request {
+        user?: UserFieldsInterface
+    }
 }

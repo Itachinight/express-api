@@ -7,7 +7,7 @@ import ProductModel from "../models/ProductModel";
 import CategoryModel from "../models/CategoryModel";
 import ProductAttributeValueModel from '../models/ProductAttributeValueModel';
 import ProductAttributeValue from "../entities/ProductAttributeValue";
-import {parseId} from "../utils/helper";
+import {allowForAdmin, parseId} from "../utils/helper";
 import BaseController from "./BaseController";
 
 export default class ProductController extends BaseController{
@@ -36,16 +36,16 @@ export default class ProductController extends BaseController{
             }
         });
 
-        this.router.post('/:id/attributes', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.post('/:id/attributes', allowForAdmin, async (req: Request, res: Response, next: NextFunction) => {
             const productId: number = parseId(req);
             const {attributeId, value} = req.body;
 
             try {
                 await this.productModel.checkProductPresence(productId);
                 await this.productAttributeValueModel.addProductAttributeValue(productId, attributeId, value);
-                const attributeValue: ProductAttributeValue = await this.productAttributeValueModel
+                const attributeValue: Promise<ProductAttributeValue> = this.productAttributeValueModel
                     .getProductAttributeValueById(productId, attributeId);
-                res.send(attributeValue);
+                res.send(await attributeValue);
             } catch (err) {
                 console.log(err);
                 if (err instanceof EntityNotFoundError) {
@@ -56,7 +56,7 @@ export default class ProductController extends BaseController{
             }
         });
 
-        this.router.delete('/:id/attributes', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.delete('/:id/attributes', allowForAdmin, async (req: Request, res: Response, next: NextFunction) => {
             const productId: number = parseId(req);
             const {attributeId} = req.body;
 
@@ -87,7 +87,7 @@ export default class ProductController extends BaseController{
             }
         });
 
-        this.router.post('/:id/categories', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.post('/:id/categories', allowForAdmin, async (req: Request, res: Response, next: NextFunction) => {
             const id: number = parseId(req);
             const {categories} = req.body;
 
@@ -105,7 +105,7 @@ export default class ProductController extends BaseController{
             }
         });
 
-        this.router.delete('/:id/categories', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.delete('/:id/categories', allowForAdmin, async (req: Request, res: Response, next: NextFunction) => {
             const id: number = parseId(req);
             const {categories} = req.body;
 
@@ -140,7 +140,7 @@ export default class ProductController extends BaseController{
             }
         });
 
-        this.router.post('/', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.post('/', allowForAdmin, async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const product: Product = await this.productModel.createProduct(req.body);
                 res.status(201);
@@ -151,7 +151,7 @@ export default class ProductController extends BaseController{
             }
         });
 
-        this.router.put('/:id', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.put('/:id', allowForAdmin, async (req: Request, res: Response, next: NextFunction) => {
             const id: number = parseId(req);
             const {name, price, description, manufacturer} = req.body;
             const productParams: ProductFieldsInterface = {};
@@ -174,7 +174,7 @@ export default class ProductController extends BaseController{
             }
         });
 
-        this.router.delete('/:id', async(req: Request, res: Response, next: NextFunction) => {
+        this.router.delete('/:id', allowForAdmin, async(req: Request, res: Response, next: NextFunction) => {
             const id: number = parseId(req);
             const {affected} = await this.productModel.deleteProductById(id);
 

@@ -2,8 +2,6 @@ import {Column, Entity, OneToMany} from "typeorm";
 import BaseEntity from "./BaseEntity";
 import UserCart from "./UserCart";
 
-type UserRoleType = "admin" | "user"
-
 @Entity('users')
 export default class User extends BaseEntity {
 

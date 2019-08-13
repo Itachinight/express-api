@@ -1,8 +1,8 @@
-import {Request, Response, NextFunction, Router} from "express";
+import {Request, Response, NextFunction} from "express";
 import Attribute from "../entities/Attribute";
 import AttributeModel from "../models/AttributeModel";
 import {BadRequest, NotFound} from "http-errors";
-import {parseId} from "../utils/helper";
+import {allowForAdmin, parseId} from "../utils/helper";
 import {EntityNotFoundError} from "typeorm/error/EntityNotFoundError";
 import BaseController from "./BaseController";
 
@@ -32,7 +32,7 @@ export default class AttributeController extends BaseController{
             }
         });
 
-        this.router.post('/', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.post('/', allowForAdmin, async (req: Request, res: Response, next: NextFunction) => {
             const {name} = req.body;
 
             try {
@@ -44,7 +44,7 @@ export default class AttributeController extends BaseController{
             }
         });
 
-        this.router.put('/:id', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.put('/:id', allowForAdmin, async (req: Request, res: Response, next: NextFunction) => {
             const id: number = parseId(req);
             const {name} = req.body;
 
@@ -59,7 +59,7 @@ export default class AttributeController extends BaseController{
             }
         });
 
-        this.router.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.delete('/:id', allowForAdmin, async (req: Request, res: Response, next: NextFunction) => {
             const id: number = parseId(req);
             const {affected} = await this.attributeModel.deleteAttributeById(id);
 

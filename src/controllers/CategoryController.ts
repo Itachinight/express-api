@@ -5,7 +5,7 @@ import Product from "../entities/Product";
 import {EntityNotFoundError} from "typeorm/error/EntityNotFoundError";
 import CategoryModel from "../models/CategoryModel";
 import ProductModel from "../models/ProductModel";
-import {parseId} from "../utils/helper";
+import {allowForAdmin, parseId} from "../utils/helper";
 import BaseController from "./BaseController";
 
 export default class CategoryController extends BaseController{
@@ -42,7 +42,7 @@ export default class CategoryController extends BaseController{
             }
         });
 
-        this.router.post('/', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.post('/', allowForAdmin, async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const category: Category = await this.categoryModel.createCategory(req.body);
                 res.send(category);
@@ -52,7 +52,7 @@ export default class CategoryController extends BaseController{
             }
         });
 
-        this.router.put('/:id', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.put('/:id', allowForAdmin, async (req: Request, res: Response, next: NextFunction) => {
             const id: number = parseId(req);
             const {name, description} = req.body;
 
@@ -69,7 +69,7 @@ export default class CategoryController extends BaseController{
             }
         });
 
-        this.router.delete('/:id', async(req: Request, res: Response, next: NextFunction) => {
+        this.router.delete('/:id', allowForAdmin, async(req: Request, res: Response, next: NextFunction) => {
             const id: number = parseId(req);
             const {affected} = await this.categoryModel.deleteCategoryById(id);
 

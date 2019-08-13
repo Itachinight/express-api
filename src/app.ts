@@ -9,7 +9,7 @@ import CategoryController from './controllers/CategoryController';
 import ProductController from './controllers/ProductController';
 import UserController from "./controllers/UserController";
 import AuthController from "./controllers/AuthController";
-import jwt = require("express-jwt");
+import {parseToken} from "./utils/tokenGenerator";
 
 dotEnv.config();
 const connection: Promise<Connection> = createConnection();
@@ -27,9 +27,10 @@ connection.then(async (connection: Connection) => {
     const userController: UserController = new UserController();
     const authController: AuthController = new AuthController();
 
-    app.use('/api/v1/attributes', jwt({secret: process.env.JWT_SALT}));
-    app.use('/api/v1/attributes', attributeController.router);
     app.use('/api/v1/auth', authController.router);
+
+    app.use(parseToken);
+    app.use('/api/v1/attributes', attributeController.router);
     app.use('/api/v1/categories', categoryController.router);
     app.use('/api/v1/products', productController.router);
     app.use('/api/v1/users', userController.router);
@@ -47,8 +48,6 @@ connection.then(async (connection: Connection) => {
     });
 }).catch(err => console.log(err));
 
-
 /*
-TODO users
 TODO carts + payment options
  */

@@ -1,8 +1,9 @@
 import {NextFunction, Request, Response} from "express";
 import BaseController from "./BaseController";
-import {BadRequest, NotFound} from "http-errors";
+import {BadRequest} from "http-errors";
 import UserModel from "../models/UserModel";
 import User from "../entities/User";
+import {allowForAdmin} from "../utils/helper";
 
 export default class UserController extends BaseController{
     private readonly userModel: UserModel;
@@ -14,7 +15,7 @@ export default class UserController extends BaseController{
 
     protected setRoutes(): void {
 
-        this.router.post('/', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.post('/', allowForAdmin, async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const user: User = await this.userModel.createUser(req.body);
                 res.send(user);
