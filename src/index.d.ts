@@ -26,12 +26,13 @@ interface CategoryFieldsInterface {
 }
 
 interface UserFieldsInterface {
-    id?: number;
-    name?: string;
-    surname?: string;
-    login?: string;
-    email?: string;
-    admin?: boolean;
+    admin?: boolean,
+    id?: number,
+    name?: string,
+    password?: string,
+    surname?: string,
+    login?: string,
+    email?: string,
 }
 declare namespace Express {
     export interface Request {
