@@ -5,12 +5,12 @@ export const parseId = (req: Request): number => {
 };
 
 export const allowForAdmin = (req: Request, res: Response, next: NextFunction) => {
-    if (req.user.role === 'admin') {
+    if (req.user.admin === true) {
         next();
     } else res.sendStatus(401);
 };
 
 export const allowForRegistered = (req: Request, res: Response, next: NextFunction) => {
-    if (!req.user.role) return res.sendStatus(401);
+    if (!req.user) return res.sendStatus(401);
     next();
 };

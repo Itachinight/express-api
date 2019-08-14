@@ -9,6 +9,7 @@ import ProductAttributeValueModel from '../models/ProductAttributeValueModel';
 import ProductAttributeValue from "../entities/ProductAttributeValue";
 import {allowForAdmin, parseId} from "../utils/helper";
 import BaseController from "./BaseController";
+import Attribute from "../entities/Attribute";
 
 export default class ProductController extends BaseController{
     private readonly productModel: ProductModel;
@@ -53,6 +54,19 @@ export default class ProductController extends BaseController{
                 } else {
                     next(new BadRequest());
                 }
+            }
+        });
+
+        this.router.put('/:id/attributes', allowForAdmin, async (req: Request, res: Response, next: NextFunction) => {
+            const userId: number = parseId(req);
+            const {attributeId, value} = req.body;
+
+            try {
+                await this.productAttributeValueModel.updateProductAttributeValueById(userId, attributeId, value);
+                res.sendStatus(204);
+            } catch (err) {
+                console.log(err);
+                next(new BadRequest());
             }
         });
 

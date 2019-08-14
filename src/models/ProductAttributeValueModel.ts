@@ -1,4 +1,4 @@
-import {DeleteResult, getRepository, Repository} from "typeorm";
+import {DeleteResult, getRepository, Repository, UpdateResult} from "typeorm";
 import ProductAttributeValue from "../entities/ProductAttributeValue";
 import Product from "../entities/Product";
 import {InsertResult} from "typeorm";
@@ -56,11 +56,20 @@ export default class ProductAttributeValueModel {
             .execute();
     };
 
+    public async updateProductAttributeValueById(productId: number, attributeId: number, value: string): Promise<UpdateResult> {
+        return this.repository.createQueryBuilder()
+            .update()
+            .set({value})
+            .where('productId = :productId', {productId})
+            .andWhere('attributeId = :attributeId', {attributeId})
+            .execute();
+    };
+
     public async deleteProductAttributeValue(productId: number, attributeId: number): Promise<DeleteResult> {
         return this.repository.createQueryBuilder('values')
             .delete()
             .where('productId = :productId', {productId})
-            .andWhere('attributeID = :attributeId', {attributeId})
+            .andWhere('attributeId = :attributeId', {attributeId})
             .execute();
     };
 }

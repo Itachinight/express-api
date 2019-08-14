@@ -14,12 +14,8 @@ export default class User extends BaseEntity {
     @Column()
     password: string;
 
-    @Column({
-        type: "enum",
-        enum: ["admin", "user"],
-        default: "user"
-    })
-    role: UserRoleType;
+    @Column({unique: true})
+    email: string;
 
     @OneToMany(type => UserCart, userCart => userCart.product)
     cart: UserCart;

@@ -6,6 +6,7 @@ interface ProductSearchParams {
     categoryId?: number,
     attrId?: number,
     attrValue?: string,
+    search?: string,
 }
 
 interface ProductFieldsInterface {
@@ -16,7 +17,7 @@ interface ProductFieldsInterface {
 }
 
 interface AttributeFieldsInterface {
-    name: string;
+    name?: string;
 }
 
 interface CategoryFieldsInterface {
@@ -24,14 +25,13 @@ interface CategoryFieldsInterface {
     description?: string,
 }
 
-type UserRoleType = "admin" | "user";
-
 interface UserFieldsInterface {
+    id?: number;
     name?: string;
     surname?: string;
     login?: string;
-    password?: string;
-    role?: UserRoleType;
+    email?: string;
+    admin?: boolean;
 }
 declare namespace Express {
     export interface Request {

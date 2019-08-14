@@ -18,4 +18,4 @@ export const parseToken = async (req: Request, res: Response, next: NextFunction
         console.log(err);
         res.sendStatus(401);
     }
-}
+};

@@ -15,9 +15,9 @@ export default class ProductModel {
     };
 
     private static addSearchParams(qb: SelectQueryBuilder<Product>, queryParams: ProductSearchParams): void {
-        const {name, manufacturer, maxPrice, minPrice, categoryId, attrId, attrValue} = queryParams;
+        const {name, manufacturer, maxPrice, minPrice, categoryId, attrId, attrValue, search} = queryParams;
 
-        if (name) qb.where("product.name LIKE :name", {name: `%${name}%`});
+        if (name) qb.andWhere("product.name LIKE :name", {name: `%${name}%`});
 
         if (manufacturer) {
             qb.andWhere("product.manufacturer LIKE :manufacturer", {manufacturer: `%${manufacturer}%`});
@@ -28,6 +28,14 @@ export default class ProductModel {
         if (attrId) qb.andWhere('eav.attributeId = :attrId', {attrId});
 
         if (attrValue) qb.andWhere('eav.value LIKE :attrValue', {attrValue: `%${attrValue}%`});
+
+        if (search) {
+            qb.andWhere(
+                `eav.value LIKE :search OR product.name LIKE :search OR product.manufacturer LIKE :search OR
+                categories.name LIKE :search OR product.description LIKE :search`
+                , {search: `%${search}%`}
+            )
+        }
 
         if (maxPrice && minPrice) {
             qb.andWhere("product.price BETWEEN :minPrice AND :maxPrice", {minPrice, maxPrice});
@@ -49,13 +57,11 @@ export default class ProductModel {
 
         ProductModel.addSearchParams(qb, queryParams);
 
-        const products: Product[] = await qb.getMany();
+        return qb.getMany();
 
         // for (const product of products) {
         //     ProductAttributeValueModel.formatProductAttributeValues(product);
         // }
-
-        return products;
     };
 
     public async getProductById(id: number): Promise<Product> {
