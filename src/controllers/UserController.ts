@@ -1,11 +1,11 @@
 import {NextFunction, Request, Response} from "express";
 import BaseController from "./BaseController";
-import {BadRequest} from "http-errors";
+import {BadRequest, NotFound} from "http-errors";
 import UserModel from "../models/UserModel";
 import User from "../entities/User";
-import {parseId} from "../utils/helper";
 import CartModel from "../models/CartModel";
 import UserCart from "../entities/UserCart";
+import {validateUserRequest} from "../utils/helper";
 
 export default class UserController extends BaseController{
     private readonly userModel: UserModel;
@@ -29,56 +29,70 @@ export default class UserController extends BaseController{
             }
         });
 
-        this.router.get('/:id/cart', async (req: Request, res: Response, next: NextFunction) => {
-            const id = parseId(req);
+        this.router.route('/:userId/cart')
+            .all(validateUserRequest)
+            .get(async (req: Request, res: Response, next: NextFunction) => {
+                const {userId} = req.params;
 
-            try {
-                const cart: UserCart[] = await this.cartModel.getUserCartById(id);
-                const total: number = CartModel.getUserCartTotal(cart);
-                res.send({cart, total});
-            } catch (err) {
-                console.log(err);
-                next(new BadRequest());
-            }
-        });
+                try {
+                    const cart: UserCart[] = await this.cartModel.getUserCartById(userId);
+                    const total: number = CartModel.getUserCartTotal(cart);
+                    res.send({cart, total});
+                } catch (err) {
+                    console.log(err);
+                    next(new BadRequest());
+                }
+            })
+            .post(async (req: Request, res: Response, next: NextFunction) => {
+                const {userId} = req.params;
 
-        this.router.post('/:id/cart', async (req: Request, res: Response, next: NextFunction) => {
-            const userId = parseId(req);
-            const {productId, quantity} = req.body;
+                const {productId, quantity} = req.body;
 
-            try {
-                await this.cartModel.addProductToCartById(userId, productId, quantity);
-                res.sendStatus(201);
-            } catch (err) {
-                console.log(err);
-                next(new BadRequest());
-            }
-        });
+                try {
+                    await this.cartModel.addProductToCartById(userId, productId, quantity);
+                    res.sendStatus(201);
+                } catch (err) {
+                    console.log(err);
+                    next(new BadRequest());
+                }
+            });
 
-        this.router.put('/:id/cart', async (req: Request, res: Response, next: NextFunction) => {
-            const userId = parseId(req);
-            const {productId, quantity} = req.body;
+        this.router.route('/:userId/cart/:productId')
+            .all(validateUserRequest)
+            .get(async (req: Request, res: Response, next: NextFunction) => {
+                const {userId, productId} = req.params;
 
-            try {
-                await this.cartModel.updateProductFormCartById(userId, productId, quantity);
-                res.sendStatus(204);
-            } catch (err) {
-                console.log(err);
-                next(new BadRequest());
-            }
-        });
+                try {
+                    const cartProduct: UserCart = await this.cartModel.getUserCartProductById(userId, productId);
+                    if (!cartProduct) return next(new NotFound());
+                    res.send(cartProduct);
+                } catch (err) {
+                    console.log(err);
+                    next(new BadRequest());
+                }
+            })
+            .put(async (req: Request, res: Response, next: NextFunction) => {
+                const {userId, productId} = req.params;
+                const {quantity} = req.body;
 
-        this.router.delete('/:id/cart', async (req: Request, res: Response, next: NextFunction) => {
-            const userId = parseId(req);
-            const {productId} = req.body;
+                try {
+                    await this.cartModel.updateProductFormCartById(userId, productId, quantity);
+                    res.sendStatus(204);
+                } catch (err) {
+                    console.log(err);
+                    next(new BadRequest());
+                }
+            })
+            .delete(async (req: Request, res: Response, next: NextFunction) => {
+                const {userId, productId} = req.params;
 
-            try {
-                await this.cartModel.deleteProductFormCartById(userId, productId);
-                res.sendStatus(204);
-            } catch (err) {
-                console.log(err);
-                next(new BadRequest());
-            }
-        });
+                try {
+                    await this.cartModel.deleteProductFormCartById(userId, productId);
+                    res.sendStatus(204);
+                } catch (err) {
+                    console.log(err);
+                    next(new BadRequest());
+                }
+            });
     }
 }

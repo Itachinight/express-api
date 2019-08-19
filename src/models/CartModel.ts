@@ -17,12 +17,19 @@ export default class CartModel{
     }
 
     public async getUserCartById(id: number): Promise<UserCart[]> {
-        return this.repository
-            .createQueryBuilder('cart')
+        return this.repository.createQueryBuilder('cart')
             .innerJoin('cart.product', 'product')
             .addSelect(['product.name', 'product.price', 'product.description', 'product.manufacturer'])
             .where('cart.userId = :id AND cart.payStatus = 0',{id})
             .getMany();
+    }
+
+    public async getUserCartProductById(userId: number, productId: number): Promise<UserCart> {
+        return this.repository.createQueryBuilder('cart')
+            .innerJoin('cart.product', 'product')
+            .addSelect(['product.name', 'product.price', 'product.description', 'product.manufacturer'])
+            .where('cart.userId = :userId AND product.id = :productId AND cart.payStatus = 0',{userId, productId})
+            .getOne();
     }
 
     public async addProductToCartById(userId: number, productId: number, quantity: number): Promise<InsertResult> {

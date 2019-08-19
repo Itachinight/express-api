@@ -9,10 +9,6 @@ export default class CategoryModel {
         this.repository = getRepository(Category);
     }
 
-    public async checkCategoryPresence(id: number): Promise<void> {
-        await this.repository.findOneOrFail(id);
-    };
-
     public async getCategoryById(id: number): Promise<Category> {
         return this.repository.findOneOrFail(id);
     };

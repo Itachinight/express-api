@@ -11,11 +11,11 @@ export default class User extends BaseEntity {
     @Column({unique: true})
     login: string;
 
-    @Column()
-    password: string;
-
     @Column({unique: true})
     email: string;
+
+    @Column()
+    password: string;
 
     @OneToMany(type => UserCart, userCart => userCart.product)
     cart: UserCart;

@@ -1,16 +1,15 @@
 import {NextFunction, Request, Response} from "express";
-
-export const parseId = (req: Request): number => {
-    return parseInt(req.params.id, 10);
-};
+import {Forbidden} from "http-errors";
 
 export const allowForAdmin = (req: Request, res: Response, next: NextFunction) => {
     if (req.user.admin === true) {
         next();
-    } else res.sendStatus(401);
+    } else next(new Forbidden());
 };
 
-export const allowForRegistered = (req: Request, res: Response, next: NextFunction) => {
-    if (!req.user) return res.sendStatus(401);
-    next();
+export const validateUserRequest = (req: Request, res: Response, next: NextFunction) => {
+    const {userId} = req.params;
+    if (userId == req.user.id) {
+        next();
+    } else next(new Forbidden());
 };

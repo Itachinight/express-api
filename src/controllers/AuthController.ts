@@ -6,11 +6,11 @@ import User from "../entities/User";
 import {createToken} from "../utils/tokenGenerator";
 import AdminModel from "../models/AdminModel";
 import Admin from "../entities/Admin";
+import {Unauthorized} from 'http-errors';
 
 export default class AuthController extends BaseController {
     private readonly userModel: UserModel;
     private readonly adminModel: AdminModel;
-
 
     constructor() {
         super();
@@ -31,10 +31,10 @@ export default class AuthController extends BaseController {
                         login,
                         token: await createToken(JSON.parse(JSON.stringify(user)))
                     });
-                } else res.sendStatus(400);
+                } else next(new Unauthorized());
             } catch (err) {
                 console.log(err);
-                res.sendStatus(400);
+                next(new Unauthorized());
             }
         });
 
@@ -50,10 +50,10 @@ export default class AuthController extends BaseController {
                         login,
                         token: await createToken(JSON.parse(JSON.stringify(admin)))
                     });
-                } else res.sendStatus(400);
+                } next(new Unauthorized());
             } catch (err) {
                 console.log(err);
-                res.sendStatus(400);
+                next(new Unauthorized());
             }
         });
     }

@@ -29,8 +29,8 @@ export default class AdminController extends BaseController {
             }
         });
 
-        this.router.post('/checkout', async (req: Request, res: Response, next: NextFunction) => {
-            const {userId} = req.body;
+        this.router.post('/checkout/:userId', async (req: Request, res: Response, next: NextFunction) => {
+            const {userId} = req.params;
 
             try {
                 const {raw} = await this.cartModel.checkoutUserCartById(userId);

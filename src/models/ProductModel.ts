@@ -49,19 +49,12 @@ export default class ProductModel {
     public async getProducts(queryParams: ProductSearchParams): Promise<Product[]> {
         const qb: SelectQueryBuilder<Product> = this.repository.createQueryBuilder('product')
             .leftJoin('product.categories', 'categories')
-            //.addSelect(['categories.id', 'categories.name'])
             .leftJoin('product.productAttributeValues', 'eav')
-            //.addSelect(['eav.attributeId','eav.value'])
             .leftJoin('eav.attribute' , 'attr');
-            //.addSelect('attr.name');
 
         ProductModel.addSearchParams(qb, queryParams);
 
         return qb.getMany();
-
-        // for (const product of products) {
-        //     ProductAttributeValueModel.formatProductAttributeValues(product);
-        // }
     };
 
     public async getProductById(id: number): Promise<Product> {
