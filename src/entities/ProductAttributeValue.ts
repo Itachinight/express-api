@@ -21,5 +21,4 @@ export default class ProductAttributeValue {
     value: string;
 
     name: string;
-
 }

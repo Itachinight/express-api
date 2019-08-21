@@ -31,9 +31,9 @@ export default class ProductModel {
 
         if (search) {
             qb.andWhere(
-                `eav.value LIKE :search OR product.name LIKE :search OR product.manufacturer LIKE :search
-                OR categories.name LIKE :search OR product.description LIKE :search`,
-                {search: `%${search}%`}
+                `eav.value LIKE :search OR product.name LIKE :search OR product.manufacturer LIKE :search OR
+                categories.name LIKE :search OR product.description LIKE :search`
+                , {search: `%${search}%`}
             )
         }
 

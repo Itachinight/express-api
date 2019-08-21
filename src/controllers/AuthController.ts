@@ -57,4 +57,5 @@ export default class AuthController extends BaseController {
             }
         });
     }
+
 }

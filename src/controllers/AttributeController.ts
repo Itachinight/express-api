@@ -15,6 +15,7 @@ export default class AttributeController extends BaseController{
     }
 
     protected setRoutes(): void {
+
         this.router.route('/')
             .get(async (req: Request, res: Response, next: NextFunction) => {
                 res.send(await this.attributeModel.getAttributes());
@@ -68,5 +69,6 @@ export default class AttributeController extends BaseController{
                     next(new NotFound());
                 }
             });
+
     }
 }

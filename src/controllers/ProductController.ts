@@ -21,6 +21,7 @@ export default class ProductController extends BaseController{
     }
 
     protected setRoutes(): void {
+
         this.router.route('/')
             .get(async (req: Request, res: Response) => {
                 const products = await this.productModel.getProducts(req.query);
