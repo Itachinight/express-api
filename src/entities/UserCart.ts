@@ -22,4 +22,5 @@ export default class UserCart {
 
     @Column({default: false})
     payStatus: boolean;
+
 }

@@ -17,7 +17,6 @@ export default class CategoryController extends BaseController{
     }
 
     protected setRoutes(): void {
-
         this.router.route('/')
             .get(async (req: Request, res: Response) => {
                 const categories: Category[] = await this.categoryModel.getCategories();
@@ -79,6 +78,5 @@ export default class CategoryController extends BaseController{
 
             res.send(products);
         });
-
     }
 }
