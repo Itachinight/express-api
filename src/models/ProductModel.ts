@@ -58,14 +58,10 @@ export default class ProductModel {
     };
 
     public async getProductById(id: number): Promise<Product> {
-        const product: Product = await this.repository.createQueryBuilder('product')
-            .leftJoinAndSelect('product.categories', 'categories')
-            .leftJoin('product.productAttributeValues', 'eav')
-            .addSelect(['eav.attributeId','eav.value'])
-            .leftJoin('eav.attribute' , 'attr')
-            .addSelect('attr.name')
-            .where('product.id = :id', {id})
-            .getOne();
+        const product = await this.repository.findOneOrFail({
+            relations: ['productAttributeValues', 'categories', 'productAttributeValues.attribute'],
+            where: {id}
+        });
 
         ProductAttributeValueModel.formatProductAttributeValues(product);
 

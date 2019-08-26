@@ -10,7 +10,7 @@ export const createToken = async (payload: object): Promise<string> => {
     return sign(payload, process.env.JWT_SALT, options);
 };
 
-export const parseToken = async (req: Request, res: Response, next: NextFunction) => {
+export const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
         req.user = <object> await verify(req.headers.authorization, process.env.JWT_SALT);
         next();
