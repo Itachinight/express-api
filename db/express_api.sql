@@ -1,4 +1,8 @@
 INSERT INTO express_api.admins (id, name, surname, login, email, password) VALUES (1, 'Test', 'Test', 'admin', 'admin@gmail.com', 'c2NyeXB0ABAAAAAIAAAAAUQ7giVWuhT+zc7o6xcvjhG4UiFKpPeGkALcOC182L+19Fgls8zmMMKrLuarDWRItn4czHEcPR0BFnBcIXM9jcdCN94Mtz1d6bbTZrQzUfm3');
+INSERT INTO express_api.admins (id, name, surname, login, email, password) VALUES (2, 'Itachi', 'Uchiha', 'itachinight', 'itachinight2@gmail.com', 'c2NyeXB0ABAAAAAIAAAAAdMIYuLsL4OHVTmspfDFICpvCOz0ZBRiv415k8ONv0vsLk8skTIJ402uFbzPA1/oaCenevK+pTOs8hEuafgb3v7njX6kHkmGKsk9EKEklic3');
+INSERT INTO express_api.users (id, name, surname, login, password, email) VALUES (1, 'Test', 'Test', 'test', 'c2NyeXB0ABAAAAAIAAAAAdV7MppFAP2LgG/Fzi2pt7nI3TsrtWN0nWu0fb3sQ6PpvtMcF4KPZPR3CExNEPvx7Xb7Jf51SNp7BffEFYjtgidb4WYAKDf/GZtNV0asLkSF', 'test@gmail.com');
+INSERT INTO express_api.users (id, name, surname, login, password, email) VALUES (2, 'Test', 'Test', 'test2', 'c2NyeXB0ABAAAAAIAAAAAeDYi16DFWknbT1HwvLSVBqKmeu06BVuDeeWFmFhWslmcvnrd8QbyVGRK9jUQunA6gHCl9nEjXjVf25p7DKY68JfUlIsqyoPFTo5AykC8zaH', 'test2@gmail.com');
+INSERT INTO express_api.users (id, name, surname, login, password, email) VALUES (3, 'Itachi', 'Uchiha', 'itachinight', 'c2NyeXB0ABAAAAAIAAAAAdbO4EA6Tqc9iNXlL+soUY745QNNXbPM8Le7/jK8wIl9TlvwIVEnzcjnh9afl/5l/KHy7khFdPPCoMkftTjqw+T8YKMwG2e2DXKNt62h4sHo', 'itachinight@gmail.com');
 INSERT INTO express_api.attributes (id, name) VALUES (1, 'Color');
 INSERT INTO express_api.attributes (id, name) VALUES (2, 'Width');
 INSERT INTO express_api.attributes (id, name) VALUES (3, 'Length');
@@ -16,9 +20,13 @@ INSERT INTO express_api.products (id, name, description, price, manufacturer, cr
 INSERT INTO express_api.products (id, name, description, price, manufacturer, created) VALUES (6, 'S10', 'Angry Droid', 899.99, 'Samsung', '2019-08-06 11:17:13.881196');
 INSERT INTO express_api.products (id, name, description, price, manufacturer, created) VALUES (7, 'IPhone X', 'Bited Apple', 899.99, 'Apple', '2019-08-06 11:18:13.840166');
 INSERT INTO express_api.products (id, name, description, price, manufacturer, created) VALUES (8, 'Wii U', 'Wiiiiiii U', 149.99, 'Nintendo', '2019-08-13 13:11:30.086511');
+INSERT INTO express_api.products (id, name, description, price, manufacturer, created) VALUES (9, 'Galaxy S7', 'Lorem ipsum dolor sit amet', 199.99, 'Samsung', '2019-08-27 18:24:52.969927');
 INSERT INTO express_api.products_attributes_values (productId, attributeId, value) VALUES (1, 1, 'White');
 INSERT INTO express_api.products_attributes_values (productId, attributeId, value) VALUES (1, 2, '33.3cm');
 INSERT INTO express_api.products_attributes_values (productId, attributeId, value) VALUES (1, 3, '27.4cm');
+INSERT INTO express_api.products_attributes_values (productId, attributeId, value) VALUES (9, 1, 'Red');
+INSERT INTO express_api.products_attributes_values (productId, attributeId, value) VALUES (9, 2, '17cm');
+INSERT INTO express_api.products_attributes_values (productId, attributeId, value) VALUES (9, 3, '12cm');
 INSERT INTO express_api.products_categories (productId, categoryId) VALUES (1, 1);
 INSERT INTO express_api.products_categories (productId, categoryId) VALUES (1, 4);
 INSERT INTO express_api.products_categories (productId, categoryId) VALUES (2, 1);
@@ -35,11 +43,7 @@ INSERT INTO express_api.products_categories (productId, categoryId) VALUES (7, 2
 INSERT INTO express_api.products_categories (productId, categoryId) VALUES (7, 4);
 INSERT INTO express_api.products_categories (productId, categoryId) VALUES (8, 1);
 INSERT INTO express_api.products_categories (productId, categoryId) VALUES (8, 4);
-INSERT INTO express_api.user_carts (userId, productId, quantity, payStatus) VALUES (1, 2, 1, 1);
-INSERT INTO express_api.user_carts (userId, productId, quantity, payStatus) VALUES (1, 3, 1, 1);
-INSERT INTO express_api.user_carts (userId, productId, quantity, payStatus) VALUES (4, 1, 4, 0);
-INSERT INTO express_api.user_carts (userId, productId, quantity, payStatus) VALUES (4, 2, 2, 0);
-INSERT INTO express_api.user_carts (userId, productId, quantity, payStatus) VALUES (4, 5, 2, 0);
-INSERT INTO express_api.user_carts (userId, productId, quantity, payStatus) VALUES (4, 6, 1, 0);
-INSERT INTO express_api.users (id, name, surname, login, password, email) VALUES (1, 'Test', 'Test', 'test', 'c2NyeXB0ABAAAAAIAAAAAdV7MppFAP2LgG/Fzi2pt7nI3TsrtWN0nWu0fb3sQ6PpvtMcF4KPZPR3CExNEPvx7Xb7Jf51SNp7BffEFYjtgidb4WYAKDf/GZtNV0asLkSF', 'test@gmail.com');
-INSERT INTO express_api.users (id, name, surname, login, password, email) VALUES (4, 'Test', 'Test', 'test2', 'c2NyeXB0ABAAAAAIAAAAAeDYi16DFWknbT1HwvLSVBqKmeu06BVuDeeWFmFhWslmcvnrd8QbyVGRK9jUQunA6gHCl9nEjXjVf25p7DKY68JfUlIsqyoPFTo5AykC8zaH', 'test2@gmail.com');
+INSERT INTO express_api.products_categories (productId, categoryId) VALUES (9, 2);
+INSERT INTO express_api.products_categories (productId, categoryId) VALUES (9, 4);
+INSERT INTO express_api.user_carts (userId, productId, quantity, payStatus, updated) VALUES (1, 1, 3, 0, '2019-08-28 16:15:06.038763');
+INSERT INTO express_api.user_carts (userId, productId, quantity, payStatus, updated) VALUES (1, 2, 1, 0, '2019-08-28 16:16:06.726373');

@@ -1,9 +1,10 @@
 {
   "name": "express-api",
-  "version": "0.6.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./dist/app.js"
+    "start": "node ./dist/app.js",
+    "auto-restart": "nodemon ./dist/app.js"
   },
   "dependencies": {
     "@types/dotenv": "^6.1.1",
