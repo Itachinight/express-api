@@ -20,6 +20,6 @@
     "nodemon": "^1.19.1",
     "reflect-metadata": "^0.1.13",
     "scrypt-kdf": "^2.0.1",
-    "typeorm": "^0.2.18"
+    "typeorm": "^0.2.25"
   }
 }
